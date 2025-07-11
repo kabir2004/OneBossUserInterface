@@ -1076,16 +1076,20 @@ export default function PortfolioContent() {
   
   // Handle URL parameter for account navigation from dashboard
   useEffect(() => {
-    const accountParam = searchParams.get('account')
-    if (accountParam) {
-      setOpen(accountParam)
-      // Scroll to the account or focus on it
-      setTimeout(() => {
-        const accountElement = document.getElementById(`account-${accountParam}`)
-        if (accountElement) {
-          accountElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        }
-      }, 100)
+    if (searchParams) {
+      const accountParam = searchParams.get('account')
+      if (accountParam) {
+        setOpen(accountParam)
+        // Scroll to the account or focus on it
+        setTimeout(() => {
+          const accountElement = document.getElementById(`account-${accountParam}`)
+          if (accountElement) {
+            accountElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+        }, 100)
+      } else {
+        setOpen(ACCOUNTS[0].id)
+      }
     } else {
       setOpen(ACCOUNTS[0].id)
     }
@@ -1254,7 +1258,7 @@ export default function PortfolioContent() {
       {/* Accounts Accordion */}
       <Accordion type="single" collapsible value={open ?? undefined} onValueChange={setOpen} className="bg-white rounded-xl border border-gray-200">
         {ACCOUNTS.map((account, idx) => {
-          const isFromDashboard = searchParams.get('account') === account.id
+          const isFromDashboard = searchParams ? searchParams.get('account') === account.id : false
           return (
             <AccordionItem 
               key={account.id} 
