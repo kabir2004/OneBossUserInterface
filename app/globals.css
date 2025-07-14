@@ -3,7 +3,68 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Scale */
+@layer utilities {
+  .text-display {
+    @apply text-3xl font-bold tracking-tight;
+  }
+  
+  .text-heading-1 {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+  
+  .text-heading-2 {
+    @apply text-xl font-semibold tracking-tight;
+  }
+  
+  .text-heading-3 {
+    @apply text-lg font-medium tracking-tight;
+  }
+  
+  .text-body-large {
+    @apply text-base font-normal leading-relaxed;
+  }
+  
+  .text-body {
+    @apply text-sm font-normal leading-relaxed;
+  }
+  
+  .text-body-small {
+    @apply text-xs font-normal leading-relaxed;
+  }
+  
+  .text-caption {
+    @apply text-xs font-medium tracking-wide uppercase;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Enhanced Card Styling */
+@layer components {
+  .card-elevated {
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+  
+  .card-interactive {
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200 cursor-pointer;
+  }
+  
+  .button-primary {
+    @apply bg-zinc-900 text-zinc-50 hover:bg-zinc-800 font-medium transition-colors duration-200;
+  }
+  
+  .button-secondary {
+    @apply bg-white text-zinc-900 border border-gray-200 hover:bg-gray-50 font-medium transition-colors duration-200;
+  }
 }
 
 @layer utilities {

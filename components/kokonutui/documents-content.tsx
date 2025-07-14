@@ -358,8 +358,8 @@ export default function DocumentsContent() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Trade Confirmation Documents</h1>
-          <p className="text-gray-600 mt-1">Client documents organized by portfolio</p>
+          <h1 className="text-heading-1 text-gray-900">Trade Confirmation Documents</h1>
+                      <p className="text-body text-gray-600 mt-1">Client documents organized by portfolio</p>
         </div>
         <Button className="bg-zinc-900 text-zinc-50 hover:bg-zinc-800">
           <Upload className="w-4 h-4 mr-2" />

@@ -22,7 +22,12 @@ import {
   BarChart3,
   TrendingUp,
   Clock,
-  DollarSign
+  DollarSign,
+  ArrowLeft,
+  PieChart,
+  Target,
+  Receipt,
+  Banknote
 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -41,752 +46,119 @@ import { useState, useEffect, useCallback } from "react"
 import { useSearchParams } from "next/navigation"
 import AssetDetail from "./asset-detail"
 import TFSADetail from "./tfsa-detail"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-// Professional TradingView-style chart component
-const TradingActivityChart = ({ assetId, assetName }: { assetId: string, assetName: string }) => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [timeframe, setTimeframe] = useState('1D')
-  const [chartType, setChartType] = useState('candlestick')
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  const [tooltipData, setTooltipData] = useState<{ x: number; y: number; data: any } | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [showIndicators, setShowIndicators] = useState(false)
-  const [showDrawing, setShowDrawing] = useState(false)
-  const [drawingMode, setDrawingMode] = useState<'line' | 'rectangle' | 'fibonacci' | null>(null)
+// Simple Trading Activity Chart (Line Chart of Value Over Time)
+const SimpleTradingActivityChart = ({ assetId, assetName }: { assetId: string, assetName: string }) => {
+  // Example: Simulated value history for the asset
+  const valueHistory = [
+    { date: '2024-01-01', value: 10000 },
+    { date: '2024-02-01', value: 10500 },
+    { date: '2024-03-01', value: 11000 },
+    { date: '2024-04-01', value: 10800 },
+    { date: '2024-05-01', value: 11500 },
+    { date: '2024-06-01', value: 12000 },
+    { date: '2024-07-01', value: 12500 },
+  ]
 
-  useEffect(() => {
-    setIsVisible(true)
-    // Simulate data loading
-    const timer = setTimeout(() => setIsLoading(false), 500)
-    return () => clearTimeout(timer)
-  }, [])
+  const minValue = Math.min(...valueHistory.map(d => d.value))
+  const maxValue = Math.max(...valueHistory.map(d => d.value))
+  const valueRange = maxValue - minValue || 1
 
-  // Comprehensive market data
-  const marketData = {
-    currentPrice: 15.65,
-    change: 0.47,
-    changePercent: 3.09,
-    volume: 2456789,
-    high: 15.72,
-    low: 15.18,
-    open: 15.20,
-    prevClose: 15.18,
-    marketCap: 2456789000,
-    peRatio: 18.5,
-    dividendYield: 2.1
-  }
-
-  // Data for different timeframes
-  const getDataForTimeframe = (tf: string) => {
-    switch (tf) {
-      case '1D':
-        return [
-          { time: '09:30', open: 15.20, high: 15.25, low: 15.18, close: 15.22, volume: 125000 },
-          { time: '10:00', open: 15.22, high: 15.30, low: 15.20, close: 15.28, volume: 189000 },
-          { time: '10:30', open: 15.28, high: 15.35, low: 15.25, close: 15.32, volume: 234000 },
-          { time: '11:00', open: 15.32, high: 15.40, low: 15.30, close: 15.38, volume: 298000 },
-          { time: '11:30', open: 15.38, high: 15.45, low: 15.35, close: 15.42, volume: 345000 },
-          { time: '12:00', open: 15.42, high: 15.50, low: 15.40, close: 15.48, volume: 412000 },
-          { time: '12:30', open: 15.48, high: 15.55, low: 15.45, close: 15.52, volume: 378000 },
-          { time: '13:00', open: 15.52, high: 15.60, low: 15.50, close: 15.58, volume: 456000 },
-          { time: '13:30', open: 15.58, high: 15.65, low: 15.55, close: 15.62, volume: 523000 },
-          { time: '14:00', open: 15.62, high: 15.70, low: 15.60, close: 15.68, volume: 589000 },
-          { time: '14:30', open: 15.68, high: 15.72, low: 15.65, close: 15.70, volume: 445000 },
-          { time: '15:00', open: 15.70, high: 15.72, low: 15.68, close: 15.71, volume: 378000 },
-          { time: '15:30', open: 15.71, high: 15.72, low: 15.69, close: 15.70, volume: 234000 },
-          { time: '16:00', open: 15.70, high: 15.71, low: 15.67, close: 15.69, volume: 189000 },
-          { time: '16:30', open: 15.69, high: 15.70, low: 15.66, close: 15.68, volume: 156000 },
-          { time: '17:00', open: 15.68, high: 15.69, low: 15.65, close: 15.65, volume: 123000 }
-        ]
-      case '1W':
-        return [
-          { time: 'Mon', open: 15.10, high: 15.25, low: 15.05, close: 15.20, volume: 1250000 },
-          { time: 'Tue', open: 15.20, high: 15.35, low: 15.15, close: 15.30, volume: 1890000 },
-          { time: 'Wed', open: 15.30, high: 15.45, low: 15.25, close: 15.40, volume: 2340000 },
-          { time: 'Thu', open: 15.40, high: 15.55, low: 15.35, close: 15.50, volume: 2980000 },
-          { time: 'Fri', open: 15.50, high: 15.65, low: 15.45, close: 15.60, volume: 3450000 },
-          { time: 'Sat', open: 15.60, high: 15.70, low: 15.55, close: 15.65, volume: 1230000 },
-          { time: 'Sun', open: 15.65, high: 15.72, low: 15.60, close: 15.65, volume: 890000 }
-        ]
-      case '1M':
-        return [
-          { time: 'Week 1', open: 15.00, high: 15.20, low: 14.95, close: 15.15, volume: 8500000 },
-          { time: 'Week 2', open: 15.15, high: 15.35, low: 15.10, close: 15.30, volume: 9200000 },
-          { time: 'Week 3', open: 15.30, high: 15.50, low: 15.25, close: 15.45, volume: 10500000 },
-          { time: 'Week 4', open: 15.45, high: 15.65, low: 15.40, close: 15.60, volume: 11800000 },
-          { time: 'Week 5', open: 15.60, high: 15.72, low: 15.55, close: 15.65, volume: 12500000 }
-        ]
-      default:
-        return []
-    }
-  }
-
-  const candlestickData = getDataForTimeframe(timeframe)
-
-  // Chart dimensions
-  const chartWidth = 800
-  const chartHeight = 400
-  const padding = 60
-  
-  // Calculate price range
-  const prices = candlestickData.map(d => [d.low, d.high]).flat()
-  const minPrice = Math.min(...prices)
-  const maxPrice = Math.max(...prices)
-  const priceRange = maxPrice - minPrice
-
-  // Helper functions
-  const getXPosition = (index: number) => {
-    return padding + (index / (candlestickData.length - 1)) * (chartWidth - 2 * padding)
-  }
-
-  const getYPosition = (price: number) => {
-    return padding + (chartHeight - 2 * padding) - ((price - minPrice) / priceRange) * (chartHeight - 2 * padding)
-  }
-
-  const handleMouseMove = useCallback((event: React.MouseEvent<SVGSVGElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    
-    // Find the closest data point
-    let closestIndex = 0
-    let minDistance = Infinity
-    
-    candlestickData.forEach((_, index) => {
-      const dataX = getXPosition(index)
-      const distance = Math.abs(x - dataX)
-      if (distance < minDistance) {
-        minDistance = distance
-        closestIndex = index
-      }
-    })
-
-    setHoveredIndex(closestIndex)
-    setTooltipData({
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-      data: candlestickData[closestIndex]
-    })
-  }, [candlestickData])
-
-  const handleMouseLeave = useCallback(() => {
-    setHoveredIndex(null)
-    setTooltipData(null)
-  }, [])
-
-  const handleTimeframeChange = (newTimeframe: string) => {
-    setTimeframe(newTimeframe)
-    setIsLoading(true)
-    setTimeout(() => setIsLoading(false), 300)
-  }
-
-  const handleChartTypeChange = (newType: string) => {
-    setChartType(newType)
-  }
-
-  const toggleIndicators = () => {
-    setShowIndicators(!showIndicators)
-  }
-
-  const toggleDrawing = () => {
-    setShowDrawing(!showDrawing)
-    if (showDrawing) {
-      setDrawingMode(null)
-    }
-  }
-
-  const setDrawingTool = (tool: 'line' | 'rectangle' | 'fibonacci' | null) => {
-    setDrawingMode(tool)
-  }
-
-  if (isLoading) {
     return (
-      <div className="w-full bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
-        <div className="flex items-center justify-center h-64">
-          <div className="flex flex-col items-center gap-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="text-sm text-gray-600">Loading {timeframe} data...</p>
+    <div className="w-full bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">{assetName} Value Trend</h3>
+        <p className="text-xs text-gray-500">Total value over time</p>
           </div>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className={`w-full transition-all duration-500 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-      {/* Market Summary Header */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-6 chart-fade-in">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-6 gap-4">
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900">{assetName}</h3>
-            <p className="text-sm text-gray-600">Real-time market data</p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="text-right">
-              <div className="text-3xl lg:text-4xl font-bold text-gray-900">
-                ${marketData.currentPrice.toFixed(2)}
-              </div>
-              <div className={`text-sm font-medium ${marketData.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {marketData.change >= 0 ? '+' : ''}{marketData.change.toFixed(2)} ({marketData.changePercent.toFixed(2)}%)
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant={timeframe === '1D' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => handleTimeframeChange('1D')}
-                className="text-xs chart-hover"
-              >
-                1D
-              </Button>
-              <Button
-                variant={timeframe === '1W' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => handleTimeframeChange('1W')}
-                className="text-xs chart-hover"
-              >
-                1W
-              </Button>
-              <Button
-                variant={timeframe === '1M' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => handleTimeframeChange('1M')}
-                className="text-xs chart-hover"
-              >
-                1M
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Key Metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-gray-50 rounded-lg p-3">
-            <div className="text-xs text-gray-600">Volume</div>
-            <div className="text-sm font-semibold text-gray-900">
-              {(marketData.volume / 1000000).toFixed(1)}M
-            </div>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-3">
-            <div className="text-xs text-gray-600">High</div>
-            <div className="text-sm font-semibold text-gray-900">${marketData.high.toFixed(2)}</div>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-3">
-            <div className="text-xs text-gray-600">Low</div>
-            <div className="text-sm font-semibold text-gray-900">${marketData.low.toFixed(2)}</div>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-3">
-            <div className="text-xs text-gray-600">Open</div>
-            <div className="text-sm font-semibold text-gray-900">${marketData.open.toFixed(2)}</div>
-          </div>
-        </div>
-
-        {/* Trading Tools */}
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Chart Type Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-gray-700">Chart:</span>
-            <Select value={chartType} onValueChange={handleChartTypeChange}>
-              <SelectTrigger className="w-24 h-8 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="candlestick">Candle</SelectItem>
-                <SelectItem value="line">Line</SelectItem>
-                <SelectItem value="area">Area</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Indicators */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant={showIndicators ? 'default' : 'outline'}
-              size="sm"
-              onClick={toggleIndicators}
-              className="text-xs"
-            >
-              Indicators
-            </Button>
-            {showIndicators && (
-              <div className="flex gap-1">
-                <Button variant="outline" size="sm" className="text-xs">MA</Button>
-                <Button variant="outline" size="sm" className="text-xs">RSI</Button>
-                <Button variant="outline" size="sm" className="text-xs">MACD</Button>
-              </div>
-            )}
-          </div>
-
-          {/* Drawing Tools */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant={showDrawing ? 'default' : 'outline'}
-              size="sm"
-              onClick={toggleDrawing}
-              className="text-xs"
-            >
-              Drawing
-            </Button>
-            {showDrawing && (
-              <div className="flex gap-1">
-                <Button 
-                  variant={drawingMode === 'line' ? 'default' : 'outline'} 
-                  size="sm" 
-                  className="text-xs"
-                  onClick={() => setDrawingTool(drawingMode === 'line' ? null : 'line')}
-                >
-                  Line
-                </Button>
-                <Button 
-                  variant={drawingMode === 'rectangle' ? 'default' : 'outline'} 
-                  size="sm" 
-                  className="text-xs"
-                  onClick={() => setDrawingTool(drawingMode === 'rectangle' ? null : 'rectangle')}
-                >
-                  Box
-                </Button>
-                <Button 
-                  variant={drawingMode === 'fibonacci' ? 'default' : 'outline'} 
-                  size="sm" 
-                  className="text-xs"
-                  onClick={() => setDrawingTool(drawingMode === 'fibonacci' ? null : 'fibonacci')}
-                >
-                  Fib
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Professional Chart Container */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden chart-fade-in">
-        {/* Chart Area */}
-        <div className="relative" style={{ height: `${chartHeight + 100}px` }}>
-          <svg 
-            width="100%" 
-            height="100%" 
-            className="absolute inset-0"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-          >
-            {/* Grid Lines */}
-            {[0, 1, 2, 3, 4].map(i => (
-              <g key={i}>
+      <div className="w-full h-64 relative">
+        <svg width="100%" height="100%" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet" className="block">
+          {/* Chart area with responsive padding */}
+          <defs>
+            <clipPath id="chartArea">
+              <rect x="80" y="20" width="700" height="240" />
+            </clipPath>
+          </defs>
+          
+          {/* Grid lines */}
+          {[0, 1, 2, 3, 4, 5, 6].map((i) => (
                 <line
-                  x1={padding}
-                  y1={padding + (i * (chartHeight - 2 * padding)) / 4}
-                  x2={chartWidth - padding}
-                  y2={padding + (i * (chartHeight - 2 * padding)) / 4}
-                  stroke="#e5e7eb"
+              key={`grid-x-${i}`}
+              x1={80 + (i * 700 / 6)}
+              y1="20"
+              x2={80 + (i * 700 / 6)}
+              y2="260"
+              stroke="#F3F4F6"
                   strokeWidth="1"
-                  strokeDasharray="2,2"
-                />
-                <text
-                  x={padding - 10}
-                  y={padding + (i * (chartHeight - 2 * padding)) / 4}
-                  textAnchor="end"
-                  className="text-xs fill-gray-500"
-                  dominantBaseline="middle"
-                >
-                  ${(maxPrice - (i * priceRange / 4)).toFixed(2)}
-                </text>
-              </g>
-            ))}
-
-            {/* Time Labels */}
-            {candlestickData.filter((_, i) => i % 3 === 0).map((data, i) => (
-              <text
-                key={i}
-                x={getXPosition(i * 3)}
-                y={chartHeight - 10}
-                textAnchor="middle"
-                className="text-xs fill-gray-500"
-              >
-                {data.time}
-              </text>
-            ))}
-
-            {/* Chart Content */}
-            {chartType === 'candlestick' ? (
-              // Candlestick Chart
-              <g>
-                {candlestickData.map((data, index) => {
-                  const x = getXPosition(index)
-                  const openY = getYPosition(data.open)
-                  const closeY = getYPosition(data.close)
-                  const highY = getYPosition(data.high)
-                  const lowY = getYPosition(data.low)
-                  const isGreen = data.close >= data.open
-                  const candleWidth = Math.max(4, (chartWidth - 2 * padding) / candlestickData.length * 0.8)
-                  const isHovered = hoveredIndex === index
-                  
-                  return (
-                    <g key={index}>
-                      {/* Wick */}
+            />
+          ))}
+          {[0, 0.25, 0.5, 0.75, 1].map((t, i) => (
                       <line
-                        x1={x}
-                        y1={highY}
-                        x2={x}
-                        y2={lowY}
-                        stroke={isGreen ? '#10b981' : '#ef4444'}
-                        strokeWidth={isHovered ? "3" : "2"}
-                        className="chart-transition"
-                      />
-                      {/* Candle */}
-                      <rect
-                        x={x - candleWidth / 2}
-                        y={Math.min(openY, closeY)}
-                        width={candleWidth}
-                        height={Math.abs(closeY - openY)}
-                        fill={isGreen ? '#10b981' : '#ef4444'}
-                        stroke={isGreen ? '#059669' : '#dc2626'}
-                        strokeWidth={isHovered ? "2" : "1"}
-                        className="chart-transition"
-                        style={{ 
-                          filter: isHovered ? 'drop-shadow(0 0 4px rgba(0,0,0,0.3))' : 'none'
-                        }}
-                      />
-                    </g>
-                  )
-                })}
-              </g>
-            ) : chartType === 'line' ? (
-              // Line Chart
-              <g>
-                <defs>
-                  <filter id="lineGlow">
-                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                    <feMerge> 
-                      <feMergeNode in="coloredBlur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                </defs>
-                
-                {/* Line Path */}
+              key={`grid-y-${i}`}
+              x1="80"
+              y1={20 + t * 240}
+              x2="780"
+              y2={20 + t * 240}
+              stroke="#F3F4F6"
+              strokeWidth="1"
+            />
+          ))}
+
+          {/* Axis */}
+          <line x1="80" y1="260" x2="780" y2="260" stroke="#E5E7EB" strokeWidth="2" />
+          <line x1="80" y1="20" x2="80" y2="260" stroke="#E5E7EB" strokeWidth="2" />
+          
+          {/* Value Line */}
                 <polyline
-                  points={candlestickData.map((data, index) => {
-                    const x = getXPosition(index)
-                    const y = getYPosition(data.close)
-                    return `${x},${y}`
-                  }).join(' ')}
                   fill="none"
-                  stroke="#3b82f6"
+            stroke="#2563EB"
                   strokeWidth="3"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  style={{ filter: 'url(#lineGlow)' }}
-                />
-                
-                {/* Data Points */}
-                {candlestickData.map((data, index) => {
-                  const x = getXPosition(index)
-                  const y = getYPosition(data.close)
-                  const isHovered = hoveredIndex === index
-                  
-                  return (
-                    <circle
-                      key={index}
-                      cx={x}
-                      cy={y}
-                      r={isHovered ? "6" : "3"}
-                      fill="#3b82f6"
-                      stroke="white"
-                      strokeWidth={isHovered ? "2" : "1"}
-                      className="chart-transition"
-                      style={{ 
-                        filter: isHovered ? 'drop-shadow(0 0 6px rgba(59, 130, 246, 0.8))' : 'none'
-                      }}
-                    />
-                  )
-                })}
-              </g>
-            ) : (
-              // Area Chart
-              <g>
-                <defs>
-                  <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3"/>
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.1"/>
-                  </linearGradient>
-                  <filter id="areaGlow">
-                    <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-                    <feMerge> 
-                      <feMergeNode in="coloredBlur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                </defs>
-                
-                {/* Area Path */}
-                <path
-                  d={`M ${candlestickData.map((data, index) => {
-                    const x = getXPosition(index)
-                    const y = getYPosition(data.close)
+            clipPath="url(#chartArea)"
+            points={valueHistory.map((d, i) => {
+              const x = 80 + (i / (valueHistory.length - 1)) * 700
+              const y = 260 - ((d.value - minValue) / valueRange) * 240
                     return `${x},${y}`
-                  }).join(' L ')} L ${getXPosition(candlestickData.length - 1)},${chartHeight - padding} L ${getXPosition(0)},${chartHeight - padding} Z`}
-                  fill="url(#areaGradient)"
-                  stroke="#3b82f6"
-                  strokeWidth="2"
-                  style={{ filter: 'url(#areaGlow)' }}
-                />
-                
-                {/* Data Points */}
-                {candlestickData.map((data, index) => {
-                  const x = getXPosition(index)
-                  const y = getYPosition(data.close)
-                  const isHovered = hoveredIndex === index
-                  
+            }).join(' ')}
+          />
+          
+          {/* Dots */}
+          {valueHistory.map((d, i) => {
+            const x = 80 + (i / (valueHistory.length - 1)) * 700
+            const y = 260 - ((d.value - minValue) / valueRange) * 240
                   return (
-                    <circle
-                      key={index}
-                      cx={x}
-                      cy={y}
-                      r={isHovered ? "6" : "3"}
-                      fill="#3b82f6"
-                      stroke="white"
-                      strokeWidth={isHovered ? "2" : "1"}
-                      className="chart-transition"
-                      style={{ 
-                        filter: isHovered ? 'drop-shadow(0 0 6px rgba(59, 130, 246, 0.8))' : 'none'
-                      }}
-                    />
-                  )
-                })}
-              </g>
-            )}
-
-            {/* Volume Bars */}
-            <g transform={`translate(${padding}, ${chartHeight - 60})`}>
-              {candlestickData.map((data, index) => {
-                const x = (index / (candlestickData.length - 1)) * (chartWidth - 2 * padding)
-                const volumeHeight = (data.volume / Math.max(...candlestickData.map(d => d.volume))) * 40
-                const isGreen = data.close >= data.open
-                const barWidth = Math.max(2, (chartWidth - 2 * padding) / candlestickData.length * 0.8)
-                const isHovered = hoveredIndex === index
-                
-                return (
-                  <rect
-                    key={index}
-                    x={x - barWidth / 2}
-                    y={40 - volumeHeight}
-                    width={barWidth}
-                    height={volumeHeight}
-                    fill={isGreen ? '#10b981' : '#ef4444'}
-                    opacity={isHovered ? "0.8" : "0.6"}
-                    className="chart-transition"
-                    style={{ 
-                      filter: isHovered ? 'drop-shadow(0 0 4px rgba(0,0,0,0.3))' : 'none'
-                    }}
-                  />
-                )
-              })}
-            </g>
-
-            {/* Tooltip */}
-            {tooltipData && (
-              <g>
-                <rect
-                  x={tooltipData.x + 10}
-                  y={tooltipData.y - 80}
-                  width="180"
-                  height="70"
-                  fill="rgba(0,0,0,0.9)"
-                  rx="4"
-                  ry="4"
-                />
+              <circle key={i} cx={x} cy={y} r="5" fill="#2563EB" stroke="#FFFFFF" strokeWidth="2" />
+            )
+          })}
+          
+          {/* Y-axis labels */}
+          {[0, 0.25, 0.5, 0.75, 1].map((t, i) => (
                 <text
-                  x={tooltipData.x + 20}
-                  y={tooltipData.y - 60}
-                  fill="white"
-                  className="text-xs font-medium"
-                >
-                  {tooltipData.data.time}
+              key={i}
+              x="70"
+              y={20 + t * 240}
+              textAnchor="end"
+              alignmentBaseline="middle"
+              className="text-xs fill-gray-500 font-medium"
+            >
+              {`$${(minValue + t * valueRange).toLocaleString()}`}
                 </text>
+          ))}
+          
+          {/* X-axis labels */}
+          {valueHistory.map((d, i) => (
                 <text
-                  x={tooltipData.x + 20}
-                  y={tooltipData.y - 45}
-                  fill="white"
-                  className="text-xs"
-                >
-                  O: ${tooltipData.data.open.toFixed(2)}
-                </text>
-                <text
-                  x={tooltipData.x + 20}
-                  y={tooltipData.y - 30}
-                  fill="white"
-                  className="text-xs"
-                >
-                  H: ${tooltipData.data.high.toFixed(2)}
-                </text>
-                <text
-                  x={tooltipData.x + 20}
-                  y={tooltipData.y - 15}
-                  fill="white"
-                  className="text-xs"
-                >
-                  L: ${tooltipData.data.low.toFixed(2)}
-                </text>
-                <text
-                  x={tooltipData.x + 20}
-                  y={tooltipData.y}
-                  fill="white"
-                  className="text-xs"
-                >
-                  C: ${tooltipData.data.close.toFixed(2)}
-                </text>
-                <text
-                  x={tooltipData.x + 20}
-                  y={tooltipData.y + 15}
-                  fill="white"
-                  className="text-xs"
-                >
-                  Vol: {(tooltipData.data.volume / 1000).toFixed(0)}K
-                </text>
-              </g>
-            )}
-
-            {/* Drawing Tools */}
-            {drawingMode && (
-              <g>
-                {/* Drawing Instructions */}
-                <text
-                  x={chartWidth / 2}
-                  y={chartHeight - 20}
+              key={i}
+              x={80 + (i / (valueHistory.length - 1)) * 700}
+              y="280"
                   textAnchor="middle"
-                  fill="#3b82f6"
-                  className="text-xs font-medium"
+              className="text-xs fill-gray-500 font-medium"
                 >
-                  {drawingMode === 'line' && 'Click to start line, click again to end'}
-                  {drawingMode === 'rectangle' && 'Click and drag to draw rectangle'}
-                  {drawingMode === 'fibonacci' && 'Click to set Fibonacci retracement points'}
+              {d.date.slice(5, 7) + '/' + d.date.slice(2, 4)}
                 </text>
-              </g>
-            )}
-
-            {/* Indicators */}
-            {showIndicators && (
-              <g>
-                {/* Moving Average Line */}
-                <polyline
-                  points={candlestickData.map((data, index) => {
-                    const x = getXPosition(index)
-                    // Simple moving average calculation
-                    const maValue = candlestickData
-                      .slice(Math.max(0, index - 4), index + 1)
-                      .reduce((sum, d) => sum + d.close, 0) / Math.min(5, index + 1)
-                    const y = getYPosition(maValue)
-                    return `${x},${y}`
-                  }).join(' ')}
-                  fill="none"
-                  stroke="#f59e0b"
-                  strokeWidth="2"
-                  strokeDasharray="5,5"
-                  opacity="0.8"
-                />
-                
-                {/* RSI Indicator (simplified) */}
-                <g transform={`translate(${padding}, ${chartHeight - 120})`}>
-                  <rect
-                    x="0"
-                    y="0"
-                    width="100"
-                    height="40"
-                    fill="rgba(59, 130, 246, 0.1)"
-                    stroke="#3b82f6"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x="50"
-                    y="15"
-                    textAnchor="middle"
-                    fill="#3b82f6"
-                    className="text-xs font-medium"
-                  >
-                    RSI: 65.4
-                  </text>
-                  <text
-                    x="50"
-                    y="30"
-                    textAnchor="middle"
-                    fill="#3b82f6"
-                    className="text-xs"
-                  >
-                    Neutral
-                  </text>
-                </g>
-              </g>
-            )}
+          ))}
           </svg>
-        </div>
-
-        {/* Chart Footer */}
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between text-xs text-gray-600">
-            <div className="flex items-center gap-4">
-              <span>Volume: {(marketData.volume / 1000000).toFixed(1)}M</span>
-              <span>Avg Volume: {(marketData.volume / 1000000).toFixed(1)}M</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <span>Last Updated: {new Date().toLocaleTimeString()}</span>
-              <span>Data: Real-time</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Trading Tools */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-4 chart-scale-in">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3">Quick Actions</h4>
-          <div className="space-y-2">
-            <Button size="sm" className="w-full text-xs bg-green-600 hover:bg-green-700 chart-hover">
-              Buy {assetName}
-            </Button>
-            <Button size="sm" variant="outline" className="w-full text-xs chart-hover">
-              Sell {assetName}
-            </Button>
-            <Button size="sm" variant="outline" className="w-full text-xs chart-hover">
-              Set Alert
-            </Button>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-xl border border-gray-200 p-4 chart-scale-in">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3">Technical Indicators</h4>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between">
-              <span>RSI (14):</span>
-              <span className="font-medium">65.4</span>
-            </div>
-            <div className="flex justify-between">
-              <span>MACD:</span>
-              <span className="font-medium text-green-600">Bullish</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Moving Avg (50):</span>
-              <span className="font-medium">$15.42</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-xl border border-gray-200 p-4 chart-scale-in">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3">Market Sentiment</h4>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between">
-              <span>Analyst Rating:</span>
-              <span className="font-medium text-green-600">Buy</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Price Target:</span>
-              <span className="font-medium">$16.50</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Upside:</span>
-              <span className="font-medium text-green-600">+5.4%</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )
@@ -854,7 +226,8 @@ const TRUST_TRANSACTIONS: Record<string, TrustTransaction[]> = {
 const ACCOUNTS = [
   {
     id: "070G225184",
-    name: "TFSA Client Name, Individual Data Entry Wizard",
+    name: "070225184",
+    accountType: "Tax-Free Savings Account (TFSA)",
     beneficiary: "Estate",
     totalValue: "$14,582.16",
     holdings: [
@@ -892,7 +265,8 @@ const ACCOUNTS = [
   },
   {
     id: "070G225194",
-    name: "TFSA Client Name, Individual Data Entry Wizard",
+    name: "070225194",
+    accountType: "Registered Retirement Savings Plan (RRSP)",
     beneficiary: "Estate",
     totalValue: "$77,477.32",
     holdings: [],
@@ -903,7 +277,8 @@ const ACCOUNTS = [
   // Dashboard accounts mapped to portfolio accounts
   {
     id: "1",
-    name: "Growth Portfolio - Tech & Growth Stocks",
+    name: "001000001",
+    accountType: "Registered Education Savings Plan (RESP)",
     beneficiary: "Individual",
     totalValue: "$847,392",
     holdings: [
@@ -941,7 +316,8 @@ const ACCOUNTS = [
   },
   {
     id: "2",
-    name: "Conservative Fund - Bonds & Blue Chips",
+    name: "002000001",
+    accountType: "Registered Disability Savings Plan (RDSP)",
     beneficiary: "Individual",
     totalValue: "$623,150",
     holdings: [
@@ -979,7 +355,8 @@ const ACCOUNTS = [
   },
   {
     id: "3",
-    name: "Client Accounts - Managed Portfolios",
+    name: "003000001",
+    accountType: "Tax-Free Savings Account (TFSA)",
     beneficiary: "Multiple Clients",
     totalValue: "$1,376,850",
     holdings: [
@@ -1008,7 +385,8 @@ const ACCOUNTS = [
   },
   {
     id: "4",
-    name: "Trading Account - Active Trading",
+    name: "004000001",
+    accountType: "Registered Retirement Income Fund (RRIF)",
     beneficiary: "Individual",
     totalValue: "$892,000",
     holdings: [
@@ -1037,7 +415,8 @@ const ACCOUNTS = [
   },
   {
     id: "5",
-    name: "Retirement Fund - 401(k) & IRA",
+    name: "005000001",
+    accountType: "Registered Retirement Savings Plan (RRSP)",
     beneficiary: "Individual",
     totalValue: "$456,000",
     holdings: [
@@ -1161,49 +540,7 @@ export default function PortfolioContent() {
     return null
   }
 
-  // Notification activity data
-  const NOTIFICATION_ACTIVITY = [
-    {
-      id: "1",
-      type: "trade",
-      message: "TESLA INC COMMON STOCK - Buy order executed",
-      date: "2024-12-15 14:30:25",
-      status: "completed",
-      amount: "$24,532.00"
-    },
-    {
-      id: "2", 
-      type: "alert",
-      message: "APPLE INC COMMON STOCK - Price alert triggered",
-      date: "2024-12-15 13:45:12",
-      status: "pending",
-      amount: "$185.64"
-    },
-    {
-      id: "3",
-      type: "dividend",
-      message: "JOHNSON & JOHNSON - Dividend payment received",
-      date: "2024-12-15 12:20:08",
-      status: "completed",
-      amount: "$1,890.00"
-    },
-    {
-      id: "4",
-      type: "trade",
-      message: "NVIDIA CORP COMMON STOCK - Sell order executed",
-      date: "2024-12-15 11:15:33",
-      status: "completed",
-      amount: "$42,856.00"
-    },
-    {
-      id: "5",
-      type: "alert",
-      message: "SPDR S&P 500 ETF - Stop loss triggered",
-      date: "2024-12-15 10:30:45",
-      status: "completed",
-      amount: "$534,960.00"
-    }
-  ]
+
   
   // Show asset detail if selected
   if (selectedAsset) {
@@ -1212,7 +549,142 @@ export default function PortfolioContent() {
   
   // Show account detail if selected
   if (selectedAccount) {
+    // Check if it's a TFSA account
+    const account = ACCOUNTS.find(acc => acc.id === selectedAccount)
+    if (account && (account.id === "070G225184" || account.id === "070G225194")) {
     return <TFSADetail accountId={selectedAccount} onBack={handleBackToPortfolio} />
+    } else {
+      // For non-TFSA accounts, show a generic account detail view
+      return (
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                onClick={handleBackToPortfolio}
+                className="p-2 border-gray-200 hover:bg-gray-50"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <PieChart className="w-6 h-6 text-blue-600" />
+                  <h1 className="text-heading-1 text-gray-900">{account?.name || 'Account'}</h1>
+                  <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50">
+                    Active
+                  </Badge>
+                </div>
+                <p className="text-sm text-gray-600">Investment Account</p>
+                <p className="text-xs text-gray-500">Account #{selectedAccount}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="border-gray-200">
+                <Receipt className="w-4 h-4 mr-2" />
+                Statement
+              </Button>
+            </div>
+          </div>
+
+          {/* Account Summary */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="border-gray-200">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-600">Account Value</span>
+                  <DollarSign className="w-4 h-4 text-gray-400" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-heading-1 text-gray-900">{account?.totalValue || '$0.00'}</p>
+                  <div className="flex items-center gap-1 text-emerald-600">
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="text-sm font-medium">+$0.00 today</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-gray-200">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-600">Total Gain/Loss</span>
+                  <Target className="w-4 h-4 text-gray-400" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-2xl font-bold text-emerald-600">+$0.00</p>
+                  <p className="text-sm text-gray-500">Book Value: $0.00</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-gray-200">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-600">Holdings</span>
+                  <PieChart className="w-4 h-4 text-gray-400" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-heading-1 text-gray-900">{account?.holdings?.length || 0}</p>
+                  <p className="text-sm text-gray-500">securities</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Holdings */}
+          <Card className="border-gray-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Current Holdings</CardTitle>
+              <p className="text-sm text-gray-600">Investment breakdown in your account</p>
+            </CardHeader>
+            <CardContent>
+              {!account?.holdings || account.holdings.length === 0 ? (
+                <div className="text-center py-8">
+                  <Banknote className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Holdings</h3>
+                  <p className="text-gray-600 mb-4">This account currently has no holdings.</p>
+                  <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                    <PieChart className="w-4 h-4 mr-2" />
+                    Explore Investment Options
+                  </Button>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Security</TableHead>
+                      <TableHead>Units</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Market Value</TableHead>
+                      <TableHead>Gain/Loss</TableHead>
+                      <TableHead>Weight</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {account.holdings.map((holding) => (
+                      <TableRow key={holding.id} className="cursor-pointer hover:bg-gray-50">
+                        <TableCell>
+                          <div>
+                            <p className="font-medium text-blue-600">{holding.id}</p>
+                            <p className="text-sm text-gray-600">{holding.subject.substring(0, 50)}...</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>{holding.units}</TableCell>
+                        <TableCell>{holding.price}</TableCell>
+                        <TableCell className="font-medium">{holding.marketValue}</TableCell>
+                        <TableCell className="text-emerald-600">+$0.00</TableCell>
+                        <TableCell>0.0%</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )
+    }
   }
 
   return (
@@ -1220,7 +692,7 @@ export default function PortfolioContent() {
       {/* Top Summary */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">Assets</h2>
+                          <h2 className="text-heading-3 text-gray-900">Assets</h2>
           <div className="text-xs text-gray-500">As of August 7, 2020</div>
         </div>
         <div className="flex flex-col items-end gap-1">
@@ -1229,7 +701,7 @@ export default function PortfolioContent() {
           </Button>
           <div className="text-right">
             <div className="text-xs text-gray-500">Total value:</div>
-            <div className="font-bold text-lg text-gray-900">$4,195,392</div>
+            <div className="font-bold text-lg text-gray-900">$4,287,451</div>
           </div>
         </div>
       </div>
@@ -1249,7 +721,7 @@ export default function PortfolioContent() {
               className="text-xs border-gray-200 hover:bg-gray-50 transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
               onClick={() => setOpen(account.id)}
             >
-              {account.name.split(' - ')[0]}
+              {account.name} - {account.accountType}
             </Button>
           ))}
         </div>
@@ -1275,7 +747,7 @@ export default function PortfolioContent() {
                       handleAccountClick(account.id)
                     }}
                   >
-                    ({account.name})
+                    ({account.name} - {account.accountType})
                   </span>
                   <span className="text-xs text-gray-500 ml-2">(Beneficiary: {account.beneficiary})</span>
                 </div>
@@ -1372,8 +844,8 @@ export default function PortfolioContent() {
         })}
       </Accordion>
 
-      {/* Activity Section - Shows either Notifications or Selected Asset Activity */}
-      {selectedAssetForActivity ? (
+      {/* Activity Section - Shows Selected Asset Activity */}
+      {selectedAssetForActivity && (
         <div className="bg-white rounded-xl border border-gray-200 mt-6" onClick={(e) => e.stopPropagation()}>
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
@@ -1399,57 +871,10 @@ export default function PortfolioContent() {
             </div>
           </div>
           <div className="p-6" onClick={(e) => e.stopPropagation()}>
-            <TradingActivityChart 
+            <SimpleTradingActivityChart 
               assetId={selectedAssetForActivity} 
               assetName={getSelectedAssetDetails()?.subject || ''} 
             />
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white rounded-xl border border-gray-200 mt-6">
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Activity Notifications</h2>
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                <Clock className="w-3 h-3 mr-1" />
-                Real-time updates
-              </Badge>
-            </div>
-          </div>
-          <div className="p-6">
-            <div className="space-y-3">
-              {NOTIFICATION_ACTIVITY.map((notification) => (
-                <div 
-                  key={notification.id}
-                  className="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-all duration-200 ease-in-out"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${
-                      notification.type === 'trade' ? 'bg-blue-500' :
-                      notification.type === 'alert' ? 'bg-yellow-500' :
-                      notification.type === 'dividend' ? 'bg-green-500' : 'bg-gray-500'
-                    }`} />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{notification.message}</p>
-                      <p className="text-xs text-gray-500">{notification.date}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="outline"
-                      className={`text-xs ${
-                        notification.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
-                        notification.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
-                        'bg-gray-50 text-gray-700 border-gray-200'
-                      }`}
-                    >
-                      {notification.status}
-                    </Badge>
-                    <span className="text-sm font-medium text-gray-900">{notification.amount}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       )}

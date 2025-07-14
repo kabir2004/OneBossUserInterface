@@ -183,13 +183,13 @@ export default function TFSADetail({ accountId, onBack }: TFSADetailProps) {
           <div>
             <div className="flex items-center gap-3 mb-2">
               <Shield className="w-6 h-6 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">TFSA Account</h1>
+              <h1 className="text-heading-1 text-gray-900">TFSA Account</h1>
               <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50">
                 {account.accountStatus}
               </Badge>
             </div>
             <p className="text-sm text-gray-600">{account.name}</p>
-            <p className="text-xs text-gray-500">Account #{account.id} • Opened {account.openDate}</p>
+            <p className="text-xs text-gray-500">{account.id} • Opened {account.openDate}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -217,7 +217,7 @@ export default function TFSADetail({ accountId, onBack }: TFSADetailProps) {
               <DollarSign className="w-4 h-4 text-gray-400" />
             </div>
             <div className="space-y-1">
-              <p className="text-2xl font-bold text-gray-900">{account.totalValue}</p>
+              <p className="text-heading-1 text-gray-900">{account.totalValue}</p>
               <div className={`flex items-center gap-1 ${account.isDailyPositive ? 'text-emerald-600' : 'text-red-600'}`}>
                 {account.isDailyPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                 <span className="text-sm font-medium">{account.dailyChange} today</span>
@@ -248,7 +248,7 @@ export default function TFSADetail({ accountId, onBack }: TFSADetailProps) {
               <PieChart className="w-4 h-4 text-gray-400" />
             </div>
             <div className="space-y-1">
-              <p className="text-2xl font-bold text-gray-900">{account.remainingRoom}</p>
+              <p className="text-heading-1 text-gray-900">{account.remainingRoom}</p>
               <p className="text-sm text-gray-500">of {account.contributionRoom} available</p>
             </div>
           </CardContent>
@@ -261,7 +261,7 @@ export default function TFSADetail({ accountId, onBack }: TFSADetailProps) {
               <Calendar className="w-4 h-4 text-gray-400" />
             </div>
             <div className="space-y-1">
-              <p className="text-2xl font-bold text-gray-900">{account.contributedThisYear}</p>
+              <p className="text-heading-1 text-gray-900">{account.contributedThisYear}</p>
               <p className="text-sm text-gray-500">of {account.contributionLimit} limit</p>
             </div>
           </CardContent>
@@ -277,7 +277,7 @@ export default function TFSADetail({ accountId, onBack }: TFSADetailProps) {
               <p className="text-sm text-gray-600">You've contributed {account.contributedThisYear} of your {account.contributionLimit} annual limit</p>
             </div>
             <div className="text-right">
-              <p className="text-2xl font-bold text-gray-900">{Math.round(contributionProgress)}%</p>
+              <p className="text-heading-1 text-gray-900">{Math.round(contributionProgress)}%</p>
               <p className="text-sm text-gray-500">Used</p>
             </div>
           </div>

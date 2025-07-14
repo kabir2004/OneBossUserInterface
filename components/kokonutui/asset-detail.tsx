@@ -106,7 +106,7 @@ export default function AssetDetail({ assetId, onBack }: AssetDetailProps) {
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{asset.symbol}</h1>
+            <h1 className="text-heading-1 text-gray-900">{asset.symbol}</h1>
             <p className="text-sm text-gray-600 mt-1">{asset.name}</p>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function AssetDetail({ assetId, onBack }: AssetDetailProps) {
               </div>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-gray-900">{asset.currentPrice}</span>
+              <span className="text-heading-1 text-gray-900">{asset.currentPrice}</span>
               <div className={`flex items-center gap-1 ${asset.isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
                 {asset.isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                 <span className="text-sm font-medium">{asset.priceChange}</span>
@@ -152,7 +152,7 @@ export default function AssetDetail({ assetId, onBack }: AssetDetailProps) {
         <Card className="border-gray-200">
           <CardContent className="p-6">
             <span className="text-sm text-gray-600">Market Value</span>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{asset.marketValue}</p>
+            <p className="text-heading-1 text-gray-900 mt-2">{asset.marketValue}</p>
             <p className="text-sm text-gray-500 mt-1">Book Value: {asset.bookValue}</p>
           </CardContent>
         </Card>
@@ -170,7 +170,7 @@ export default function AssetDetail({ assetId, onBack }: AssetDetailProps) {
         <Card className="border-gray-200">
           <CardContent className="p-6">
             <span className="text-sm text-gray-600">Units Held</span>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{asset.units}</p>
+            <p className="text-heading-1 text-gray-900 mt-2">{asset.units}</p>
             <p className="text-sm text-gray-500 mt-1">Weight: {asset.portfolioWeight}</p>
           </CardContent>
         </Card>

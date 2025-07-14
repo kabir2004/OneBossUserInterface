@@ -16,7 +16,6 @@ import {
   Menu,
   PieChart,
   FileText,
-  User,
   FileUp,
   CheckCircle,
   Home,
@@ -58,14 +57,14 @@ export default function Sidebar() {
         href={href}
         onClick={handleNavigation}
         className={
-          `group flex items-center gap-2 px-2 py-1 my-1 rounded-md transition-all duration-100 active:scale-95 font-medium text-xs
+          `group flex items-center gap-2 px-2 py-1 my-1 rounded-md transition-all duration-100 active:scale-95 font-medium text-body-small
           ${isActive ?
-            'bg-black text-white border border-black' :
-            'text-black hover:bg-neutral-100 border border-transparent'}
+            'bg-neutral-100 text-black' :
+            'text-black hover:bg-neutral-100'}
           `
         }
         style={{
-          fontWeight: isActive ? 600 : 500,
+          fontWeight: 500,
           minHeight: '32px',
           minWidth: '32px',
           maxWidth: '100%',
@@ -91,23 +90,17 @@ export default function Sidebar() {
       <nav
         className={`
                 fixed inset-y-0 left-0 z-[70] w-64 bg-white transform transition-transform duration-200 ease-in-out
-                lg:translate-x-0 lg:static lg:w-64 border-r border-gray-200
+                lg:translate-x-0 lg:static lg:w-64
                 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
             `}
       >
         <div className="h-full flex flex-col">
-          <Link
-            href="/"
-            className="h-16 px-6 flex items-center border-b border-gray-200"
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-lg font-semibold hover:cursor-pointer text-gray-900">
-                OneBoss
+          <div className="flex-1 overflow-y-auto py-6 px-4">
+            <div className="px-3 mb-8">
+              <span className="text-xl font-semibold text-gray-900">
+                Sterling Mutuals
               </span>
             </div>
-          </Link>
-
-          <div className="flex-1 overflow-y-auto py-4 px-4">
             <div className="space-y-6">
               <div>
                 <div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
@@ -128,7 +121,7 @@ export default function Sidebar() {
 
               <div>
                 <div className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Trade Confirmation
+                  Documents
                 </div>
                 <div className="space-y-1">
                   <NavItem href="/estatements" icon={FileText}>
@@ -136,6 +129,9 @@ export default function Sidebar() {
                   </NavItem>
                   <NavItem href="/documents" icon={FileUp}>
                     Documents
+                  </NavItem>
+                  <NavItem href="/trade-confirmation" icon={Receipt}>
+                    Trade Confirmation
                   </NavItem>
                   <NavItem href="/approvals" icon={CheckCircle}>
                     Approvals
@@ -154,24 +150,11 @@ export default function Sidebar() {
                   <NavItem href="/advisor" icon={Building2}>
                     Advisor
                   </NavItem>
-                  <NavItem href="/profile" icon={User}>
-                    Profile
-                  </NavItem>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="px-4 py-4 border-t border-gray-200">
-            <div className="space-y-1">
-              <NavItem href="/settings" icon={Settings}>
-                Settings
-              </NavItem>
-              <NavItem href="/help" icon={HelpCircle}>
-                Help
-              </NavItem>
-            </div>
-          </div>
         </div>
       </nav>
 

@@ -13,12 +13,10 @@ interface BreadcrumbItem {
 }
 
 export default function TopNav() {
-  const breadcrumbs: BreadcrumbItem[] = [
-    { label: "OneBoss", href: "/dashboard" },
-  ]
+  const breadcrumbs: BreadcrumbItem[] = []
 
   return (
-    <nav className="px-3 sm:px-6 flex items-center justify-between bg-white border-b border-gray-200 h-full">
+    <nav className="px-3 sm:px-6 flex items-center justify-between bg-white h-full">
       <div className="font-medium text-sm hidden sm:flex items-center space-x-1 truncate max-w-[300px]">
         {breadcrumbs.map((item, index) => (
           <div key={item.label} className="flex items-center">
@@ -60,7 +58,7 @@ export default function TopNav() {
           <DropdownMenuContent
             align="end"
             sideOffset={8}
-            className="w-[280px] sm:w-80 bg-background border-border rounded-lg shadow-lg"
+            className="w-[320px] sm:w-96 bg-background border-border rounded-lg shadow-lg"
           >
             <Profile01 avatar="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png" />
           </DropdownMenuContent>

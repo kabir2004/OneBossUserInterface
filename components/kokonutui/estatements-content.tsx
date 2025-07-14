@@ -183,8 +183,8 @@ export default function EStatementsContent() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">E-Statements</h1>
-          <p className="text-gray-600 mt-1">Download your account statements and reports</p>
+          <h1 className="text-heading-1 text-gray-900">E-Statements</h1>
+          <p className="text-body text-gray-600 mt-1">Download your account statements and reports</p>
         </div>
         <Button className="bg-zinc-900 text-zinc-50 hover:bg-zinc-800">
           <Download className="w-4 h-4 mr-2" />

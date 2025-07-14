@@ -52,7 +52,7 @@ function MetricCard({ title, value, change, isPositive, icon }: MetricCardProps)
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-gray-600">{title}</p>
-            <p className="text-2xl font-bold text-gray-900">{value}</p>
+            <p className="text-heading-1 text-gray-900">{value}</p>
             <div className="flex items-center gap-1 mt-1">
               {isPositive ? (
                 <ArrowUpRight className="w-3 h-3 text-gray-900" />
@@ -83,29 +83,115 @@ const performanceData = [
   { month: 'Jun', portfolio: 4195392, benchmark: 4050000 },
 ]
 
-const allocationData = [
-  { name: 'Stocks', value: 45, color: '#10B981' },
-  { name: 'Bonds', value: 25, color: '#3B82F6' },
+// Comprehensive Allocation Data
+const assetAllocationData = [
+  { name: 'Equity', value: 45, color: '#10B981' },
+  { name: 'Fixed Income', value: 25, color: '#3B82F6' },
   { name: 'ETFs', value: 20, color: '#8B5CF6' },
-  { name: 'Cash', value: 10, color: '#F59E0B' },
+  { name: 'Cash & Equivalents', value: 10, color: '#F59E0B' },
 ]
 
-const sectorData = [
-  { sector: 'Technology', allocation: 35, performance: 12.4 },
-  { sector: 'Healthcare', allocation: 18, performance: 8.2 },
-  { sector: 'Financial', allocation: 15, performance: 6.8 },
-  { sector: 'Consumer', allocation: 12, performance: 4.5 },
-  { sector: 'Energy', allocation: 8, performance: -2.1 },
-  { sector: 'Other', allocation: 12, performance: 3.2 },
+const sectorAllocationData = [
+  { name: 'Technology', value: 35, color: '#10B981' },
+  { name: 'Healthcare', value: 18, color: '#3B82F6' },
+  { name: 'Financial Services', value: 15, color: '#8B5CF6' },
+  { name: 'Consumer Discretionary', value: 12, color: '#F59E0B' },
+  { name: 'Energy', value: 8, color: '#EF4444' },
+  { name: 'Industrials', value: 7, color: '#8B5CF6' },
+  { name: 'Materials', value: 3, color: '#06B6D4' },
+  { name: 'Real Estate', value: 2, color: '#84CC16' },
+]
+
+const geographicAllocationData = [
+  { name: 'North America', value: 65, color: '#10B981' },
+  { name: 'International Developed', value: 20, color: '#3B82F6' },
+  { name: 'Emerging Markets', value: 10, color: '#8B5CF6' },
+  { name: 'Other', value: 5, color: '#F59E0B' },
+]
+
+const marketCapAllocationData = [
+  { name: 'Large Cap', value: 50, color: '#10B981' },
+  { name: 'Mid Cap', value: 25, color: '#3B82F6' },
+  { name: 'Small Cap', value: 15, color: '#8B5CF6' },
+  { name: 'International', value: 10, color: '#F59E0B' },
+]
+
+const sectorPerformanceData = [
+  { sector: 'Technology', allocation: 35, performance: 12.4, color: '#10B981' },
+  { sector: 'Healthcare', allocation: 18, performance: 8.2, color: '#3B82F6' },
+  { sector: 'Financial Services', allocation: 15, performance: 6.8, color: '#8B5CF6' },
+  { sector: 'Consumer Discretionary', allocation: 12, performance: 4.5, color: '#F59E0B' },
+  { sector: 'Energy', allocation: 8, performance: -2.1, color: '#EF4444' },
+  { sector: 'Industrials', allocation: 7, performance: 3.2, color: '#8B5CF6' },
+  { sector: 'Materials', allocation: 3, performance: 1.8, color: '#06B6D4' },
+  { sector: 'Real Estate', allocation: 2, performance: -0.5, color: '#84CC16' },
 ]
 
 
-const riskMetrics = [
-  { metric: 'Sharpe Ratio', value: 1.85, target: 1.5 },
-  { metric: 'Beta', value: 0.92, target: 1.0 },
-  { metric: 'Alpha', value: 2.4, target: 0.0 },
-  { metric: 'Max Drawdown', value: -8.2, target: -10.0 },
+// Plans and Holdings Data for Donut Chart
+const plansData = [
+  { 
+    name: "TFSA", 
+    value: 1391059.48, // $14,582.16 + $1,376,850
+    color: "#10B981",
+    holdings: [
+      { name: "Fidelity Global Income Portfolio", value: 2774.81, color: "#34D399" },
+      { name: "Fidelity Global Income Portfolio DSC", value: 33326.39, color: "#6EE7B7" },
+      { name: "Fidelity Global Intrinsic Value", value: 33326.39, color: "#A7F3D0" },
+      { name: "Diversified Equity Portfolio", value: 813675.00, color: "#D1FAE5" },
+      { name: "Balanced Income Portfolio", value: 563692.50, color: "#ECFDF5" }
+    ]
+  },
+  { 
+    name: "RRSP", 
+    value: 533477.32, // $77,477.32 + $456,000
+    color: "#3B82F6",
+    holdings: [
+      { name: "Vanguard Total Stock Market", value: 374300.00, color: "#60A5FA" },
+      { name: "Vanguard Total International", value: 81656.00, color: "#93C5FD" },
+      { name: "Cash Position", value: 77521.32, color: "#DBEAFE" }
+    ]
+  },
+  { 
+    name: "RESP", 
+    value: 847392.00,
+    color: "#8B5CF6",
+    holdings: [
+      { name: "Tesla Inc Common Stock", value: 306650.00, color: "#A78BFA" },
+      { name: "Apple Inc Common Stock", value: 389844.00, color: "#C4B5FD" },
+      { name: "NVIDIA Corp Common Stock", value: 149996.00, color: "#DDD6FE" }
+    ]
+  },
+  { 
+    name: "RDSP", 
+    value: 623150.00,
+    color: "#F59E0B",
+    holdings: [
+      { name: "TD Canadian Bond Index Fund", value: 167632.50, color: "#FBBF24" },
+      { name: "Johnson & Johnson Common Stock", value: 300037.50, color: "#FCD34D" },
+      { name: "Procter & Gamble Common Stock", value: 155040.00, color: "#FDE68A" }
+    ]
+  },
+  { 
+    name: "RRIF", 
+    value: 892000.00,
+    color: "#EF4444",
+    holdings: [
+      { name: "SPDR S&P 500 ETF Trust", value: 534960.00, color: "#F87171" },
+      { name: "Invesco QQQ Trust Series 1", value: 357038.50, color: "#FCA5A5" }
+    ]
+  }
 ]
+
+// Flatten all holdings for the detailed donut chart
+const allHoldingsData = plansData.flatMap(plan => 
+  plan.holdings.map(holding => ({
+    name: `${plan.name} - ${holding.name}`,
+    value: holding.value,
+    color: holding.color,
+    plan: plan.name
+  }))
+)
 
 
 export default function AnalyticsContent() {
@@ -130,8 +216,8 @@ export default function AnalyticsContent() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
-          <p className="text-gray-600 mt-1">Portfolio performance and trading insights</p>
+          <h1 className="text-heading-1 text-gray-900">Analytics</h1>
+          <p className="text-body text-gray-600 mt-1">Portfolio performance and trading insights</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" className="border border-gray-200">
@@ -149,7 +235,7 @@ export default function AnalyticsContent() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="Total Portfolio Value"
-          value="$4,195,392"
+          value="$4,287,451"
           change="+12.4%"
           isPositive={true}
           icon={<DollarSign className="w-4 h-4 text-gray-900" />}
@@ -248,17 +334,43 @@ export default function AnalyticsContent() {
 
             <Card className="border border-gray-200 bg-white">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-gray-900">Risk Metrics</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-900">Plans & Holdings</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {riskMetrics.map((metric, index) => (
+                <ResponsiveContainer width="100%" height={300}>
+                  <RechartsPieChart>
+                    <Pie
+                      data={allHoldingsData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {allHoldingsData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
+                      contentStyle={{ 
+                        backgroundColor: colors.background,
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: '8px',
+                        color: colors.text
+                      }}
+                    />
+                  </RechartsPieChart>
+                </ResponsiveContainer>
+                <div className="grid grid-cols-1 gap-2 mt-4 max-h-32 overflow-y-auto">
+                  {plansData.map((plan, index) => (
                     <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
-                      <span className="text-xs font-medium text-gray-900">{metric.metric}</span>
-                      <div className="text-right">
-                        <span className="text-xs font-bold text-gray-900">{metric.value}</span>
-                        <span className="text-xs text-gray-600 ml-1">/ {metric.target}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: plan.color }}></div>
+                        <span className="text-xs font-medium text-gray-900">{plan.name}</span>
                       </div>
+                      <span className="text-xs font-bold text-gray-900">${plan.value.toLocaleString()}</span>
                     </div>
                   ))}
                 </div>
@@ -267,25 +379,71 @@ export default function AnalyticsContent() {
           </div>
         </TabsContent>
 
-        <TabsContent value="allocation" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <TabsContent value="allocation" className="space-y-6">
+          {/* Asset Allocation */}
+          <Card className="border border-gray-200 bg-white">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-900">Asset Allocation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={250}>
+                <RechartsPieChart>
+                  <Pie
+                    data={assetAllocationData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {assetAllocationData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value: number) => [`${value}%`, '']}
+                    contentStyle={{ 
+                      backgroundColor: colors.background,
+                      border: `1px solid ${colors.border}`,
+                      borderRadius: '8px',
+                      color: colors.text
+                    }}
+                  />
+                </RechartsPieChart>
+              </ResponsiveContainer>
+              <div className="grid grid-cols-2 gap-2 mt-4">
+                {assetAllocationData.map((item, index) => (
+                  <div key={index} className="flex items-center gap-2 text-xs">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                    <span className="text-gray-600">{item.name}</span>
+                    <span className="font-medium text-gray-900">{item.value}%</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Multiple Allocation Charts Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Sector Allocation */}
             <Card className="border border-gray-200 bg-white">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-gray-900">Asset Allocation</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-900">Sector Allocation</CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={200}>
                   <RechartsPieChart>
                     <Pie
-                      data={allocationData}
+                      data={sectorAllocationData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={60}
-                      outerRadius={100}
+                      innerRadius={40}
+                      outerRadius={70}
                       paddingAngle={2}
                       dataKey="value"
                     >
-                      {allocationData.map((entry, index) => (
+                      {sectorAllocationData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
@@ -300,11 +458,13 @@ export default function AnalyticsContent() {
                     />
                   </RechartsPieChart>
                 </ResponsiveContainer>
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  {allocationData.map((item, index) => (
-                    <div key={index} className="flex items-center gap-2 text-xs">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                      <span className="text-gray-600">{item.name}</span>
+                <div className="grid grid-cols-1 gap-1 mt-3 max-h-24 overflow-y-auto">
+                  {sectorAllocationData.slice(0, 4).map((item, index) => (
+                    <div key={index} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-gray-600 truncate">{item.name}</span>
+                      </div>
                       <span className="font-medium text-gray-900">{item.value}%</span>
                     </div>
                   ))}
@@ -312,29 +472,27 @@ export default function AnalyticsContent() {
               </CardContent>
             </Card>
 
+            {/* Geographic Allocation */}
             <Card className="border border-gray-200 bg-white">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-gray-900">Sector Performance</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-900">Geographic Allocation</CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={sectorData} layout="horizontal">
-                    <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
-                    <XAxis 
-                      type="number" 
-                      stroke={colors.textSecondary}
-                      fontSize={12}
-                      tick={{ fill: colors.textSecondary }}
-                      tickFormatter={(value) => `${value}%`}
-                    />
-                    <YAxis 
-                      dataKey="sector" 
-                      type="category" 
-                      stroke={colors.textSecondary}
-                      fontSize={12}
-                      width={80}
-                      tick={{ fill: colors.textSecondary }}
-                    />
+                <ResponsiveContainer width="100%" height={200}>
+                  <RechartsPieChart>
+                    <Pie
+                      data={geographicAllocationData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={70}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {geographicAllocationData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
                     <Tooltip 
                       formatter={(value: number) => [`${value}%`, '']}
                       contentStyle={{ 
@@ -344,12 +502,123 @@ export default function AnalyticsContent() {
                         color: colors.text
                       }}
                     />
-                    <Bar dataKey="performance" fill={colors.primary} radius={[0, 4, 4, 0]} />
-                  </BarChart>
+                  </RechartsPieChart>
                 </ResponsiveContainer>
+                <div className="grid grid-cols-1 gap-1 mt-3">
+                  {geographicAllocationData.map((item, index) => (
+                    <div key={index} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-gray-600 truncate">{item.name}</span>
+                      </div>
+                      <span className="font-medium text-gray-900">{item.value}%</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Market Cap Allocation */}
+            <Card className="border border-gray-200 bg-white">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-900">Market Cap Allocation</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={200}>
+                  <RechartsPieChart>
+                    <Pie
+                      data={marketCapAllocationData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={70}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {marketCapAllocationData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: number) => [`${value}%`, '']}
+                      contentStyle={{ 
+                        backgroundColor: colors.background,
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: '8px',
+                        color: colors.text
+                      }}
+                    />
+                  </RechartsPieChart>
+                </ResponsiveContainer>
+                <div className="grid grid-cols-1 gap-1 mt-3">
+                  {marketCapAllocationData.map((item, index) => (
+                    <div key={index} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-gray-600 truncate">{item.name}</span>
+                      </div>
+                      <span className="font-medium text-gray-900">{item.value}%</span>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>
+
+          {/* Sector Performance */}
+          <Card className="border border-gray-200 bg-white">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-900">Sector Performance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={sectorPerformanceData} layout="horizontal">
+                  <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
+                  <XAxis 
+                    type="number" 
+                    stroke={colors.textSecondary}
+                    fontSize={12}
+                    tick={{ fill: colors.textSecondary }}
+                    tickFormatter={(value) => `${value}%`}
+                  />
+                  <YAxis 
+                    dataKey="sector" 
+                    type="category" 
+                    stroke={colors.textSecondary}
+                    fontSize={12}
+                    width={120}
+                    tick={{ fill: colors.textSecondary }}
+                  />
+                  <Tooltip 
+                    formatter={(value: number) => [`${value}%`, '']}
+                    contentStyle={{ 
+                      backgroundColor: colors.background,
+                      border: `1px solid ${colors.border}`,
+                      borderRadius: '8px',
+                      color: colors.text
+                    }}
+                  />
+                  <Bar dataKey="performance" fill={colors.primary} radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mt-4">
+                {sectorPerformanceData.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                      <span className="text-xs font-medium text-gray-900 truncate">{item.sector}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-xs font-bold ${item.performance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {item.performance >= 0 ? '+' : ''}{item.performance}%
+                      </span>
+                      <div className="text-xs text-gray-500">{item.allocation}%</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
 

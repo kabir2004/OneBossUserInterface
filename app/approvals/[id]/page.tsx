@@ -3,7 +3,7 @@ import { useRouter, useParams } from "next/navigation"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import Layout from "@/components/kokonutui/layout"
+
 import { CheckCircle, Clock, AlertCircle, FileText, User, DollarSign } from "lucide-react"
 import Image from "next/image"
 
@@ -94,9 +94,7 @@ export default function ApprovalDetailPage() {
 
   if (!approval) {
     return (
-      <Layout>
-        <div className="max-w-2xl mx-auto p-8 text-center text-red-600">Approval not found.</div>
-      </Layout>
+      <div className="max-w-2xl mx-auto p-8 text-center text-red-600">Approval not found.</div>
     )
   }
 
@@ -106,72 +104,70 @@ export default function ApprovalDetailPage() {
   const TypeIcon = typeConfig.icon
 
   return (
-    <Layout>
-      <div className="max-w-3xl mx-auto p-4 space-y-6">
-        <Button variant="outline" className="mb-4" onClick={() => router.back()}>
-          &larr; Back
-        </Button>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span>{approval.title}</span>
-              <Badge className={`${statusConfig.bg} ${statusConfig.class} border-0`}>
-                <StatusIcon className="w-3 h-3 mr-1" />
-                {statusConfig.text}
-              </Badge>
-              <span className={`ml-2 p-2 rounded-lg ${typeConfig.class}`}><TypeIcon className="w-4 h-4" /></span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-8">
-            {/* PDF Preview */}
+    <div className="max-w-3xl mx-auto p-4 space-y-6">
+      <Button variant="outline" className="mb-4" onClick={() => router.back()}>
+        &larr; Back
+      </Button>
+      <Card className="card-elevated">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-heading-3 text-gray-900">
+            <span>{approval.title}</span>
+            <Badge className={`${statusConfig.bg} ${statusConfig.class} border-0`}>
+              <StatusIcon className="w-3 h-3 mr-1" />
+              {statusConfig.text}
+            </Badge>
+            <span className={`ml-2 p-2 rounded-lg ${typeConfig.class}`}><TypeIcon className="w-4 h-4" /></span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="grid md:grid-cols-2 gap-8">
+          {/* PDF Preview */}
+          <div>
+            <div className="font-semibold mb-2">Document Preview</div>
+            <div className="border rounded-lg bg-gray-50 flex items-center justify-center h-64 overflow-hidden">
+              {/* Replace with a real PDF viewer if available */}
+              <Image src="/placeholder-logo-dark.png" alt="PDF Preview" width={180} height={240} className="object-contain" />
+            </div>
+            <div className="mt-2 text-xs text-gray-500">(PDF preview or download link here)</div>
+            <Button variant="outline" className="mt-2 w-full" asChild>
+              <a href={approval.pdfUrl} target="_blank" rel="noopener noreferrer">Open PDF in new tab</a>
+            </Button>
+          </div>
+          {/* Details */}
+          <div className="space-y-4">
             <div>
-              <div className="font-semibold mb-2">Document Preview</div>
-              <div className="border rounded-lg bg-gray-50 flex items-center justify-center h-64 overflow-hidden">
-                {/* Replace with a real PDF viewer if available */}
-                <Image src="/placeholder-logo-dark.png" alt="PDF Preview" width={180} height={240} className="object-contain" />
-              </div>
-              <div className="mt-2 text-xs text-gray-500">(PDF preview or download link here)</div>
-              <Button variant="outline" className="mt-2 w-full" asChild>
-                <a href={approval.pdfUrl} target="_blank" rel="noopener noreferrer">Open PDF in new tab</a>
-              </Button>
+              <div className="text-xs text-gray-500">Description</div>
+              <div className="font-medium text-gray-900">{approval.description}</div>
             </div>
-            {/* Details */}
-            <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className="text-xs text-gray-500">Description</div>
-                <div className="font-medium text-gray-900">{approval.description}</div>
+                <div className="text-xs text-gray-500">Submitted By</div>
+                <div className="font-medium">{approval.submittedBy}</div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-xs text-gray-500">Submitted By</div>
-                  <div className="font-medium">{approval.submittedBy}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500">Date Created</div>
-                  <div className="font-medium">{approval.submittedDate}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500">Amount</div>
-                  <div className="font-medium">{approval.amount}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500">Status</div>
-                  <div className="font-medium flex items-center gap-1">
-                    <StatusIcon className={`w-4 h-4 ${statusConfig.class}`} />
-                    {statusConfig.text}
-                  </div>
+              <div>
+                <div className="text-xs text-gray-500">Date Created</div>
+                <div className="font-medium">{approval.submittedDate}</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-500">Amount</div>
+                <div className="font-medium">{approval.amount}</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-500">Status</div>
+                <div className="font-medium flex items-center gap-1">
+                  <StatusIcon className={`w-4 h-4 ${statusConfig.class}`} />
+                  {statusConfig.text}
                 </div>
               </div>
             </div>
-          </CardContent>
-          {approval.status === "pending" && (
-            <CardFooter className="flex gap-4 justify-end">
-              <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">Reject</Button>
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">Approve</Button>
-            </CardFooter>
-          )}
-        </Card>
-      </div>
-    </Layout>
+          </div>
+        </CardContent>
+        {approval.status === "pending" && (
+          <CardFooter className="flex gap-4 justify-end">
+            <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">Reject</Button>
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">Approve</Button>
+          </CardFooter>
+        )}
+      </Card>
+    </div>
   )
 } 

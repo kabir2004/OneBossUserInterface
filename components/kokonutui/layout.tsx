@@ -11,10 +11,10 @@ export default function Layout({ children }: LayoutProps) {
     <div className="flex h-screen">
       <Sidebar />
       <div className="w-full flex flex-1 flex-col">
-        <header className="h-16 border-b border-gray-200">
+        <header className="h-16">
           <TopNav />
         </header>
-        <main className="flex-1 overflow-auto p-6 bg-white">{children}</main>
+        <main className="flex-1 overflow-auto p-8 bg-white">{children}</main>
       </div>
     </div>
   )

@@ -44,92 +44,142 @@ const TFSA_DATA = {
 
 // Comprehensive Investment Plans Data
 const INVESTMENT_PLANS = {
-  "Growth Portfolio": {
+  "070G225184": {
+    id: "070G225184",
+    type: "tfsa",
+    title: "070225184",
+    description: "Tax-Free Savings Account (TFSA) • (Beneficiary: Estate)",
+    balance: "$14,582.16",
+    change: "+1.99%",
+    isPositive: true,
+    accounts: ["070G225184"],
+    clientCount: 1,
+    totalAssets: "$14,582.16",
+    lastUpdated: "2024-01-09"
+  },
+  "070G225194": {
+    id: "070G225194", 
+    type: "rrsp",
+    title: "070225194",
+    description: "Registered Retirement Savings Plan (RRSP) • (Beneficiary: Estate)",
+    balance: "$77,477.32",
+    change: "+1.62%",
+    isPositive: true,
+    accounts: ["070G225194"],
+    clientCount: 1,
+    totalAssets: "$77,477.32",
+    lastUpdated: "2024-01-09"
+  },
+  "1": {
     id: "1",
-    type: "portfolio",
-    title: "Growth Portfolio",
-    description: "Tech & Growth Stocks",
+    type: "resp", 
+    title: "001000001",
+    description: "Registered Education Savings Plan (RESP) • (Beneficiary: Individual)",
     balance: "$847,392",
     change: "+12.4%",
     isPositive: true,
-    accounts: ["FID-2302"],
-    clientCount: 23,
+    accounts: ["1"],
+    clientCount: 1,
     totalAssets: "$847,392",
     lastUpdated: "2024-01-09"
   },
-  "Conservative Fund": {
-    id: "2", 
-    type: "mutual-fund",
-    title: "Conservative Fund",
-    description: "Bonds & Blue Chips",
+  "2": {
+    id: "2",
+    type: "rdsp",
+    title: "002000001",
+    description: "Registered Disability Savings Plan (RDSP) • (Beneficiary: Individual)",
     balance: "$623,150",
     change: "+8.2%",
     isPositive: true,
-    accounts: ["070G225184"],
-    clientCount: 18,
+    accounts: ["2"],
+    clientCount: 1,
     totalAssets: "$623,150",
     lastUpdated: "2024-01-09"
   },
-  "Retirement Fund": {
-    id: "5",
-    type: "retirement", 
-    title: "Retirement Fund",
-    description: "401(k) & IRA",
-    balance: "$456,000",
-    change: "+6.8%",
-    isPositive: true,
-    accounts: ["070G225194"],
-    clientCount: 31,
-    totalAssets: "$456,000",
-    lastUpdated: "2024-01-09"
-  },
-  "Trading Account": {
-    id: "4",
-    type: "trading",
-    title: "Trading Account",
-    description: "Active Trading",
-    balance: "$892,000",
-    change: "-2.1%",
-    isPositive: false,
-    accounts: [],
-    clientCount: 12,
-    totalAssets: "$892,000",
-    lastUpdated: "2024-01-09"
-  },
-  "Client Accounts": {
+  "3": {
     id: "3",
-    type: "client",
-    title: "Client Accounts",
-    description: "47 Active Clients",
+    type: "tfsa",
+    title: "003000001",
+    description: "Tax-Free Savings Account (TFSA) • (Beneficiary: Multiple Clients)",
     balance: "$1,376,850",
     change: "+15.1%",
     isPositive: true,
-    accounts: [],
-    clientCount: 47,
+    accounts: ["3"],
+    clientCount: 1,
     totalAssets: "$1,376,850",
+    lastUpdated: "2024-01-09"
+  },
+  "4": {
+    id: "4",
+    type: "rrif",
+    title: "004000001",
+    description: "Registered Retirement Income Fund (RRIF) • (Beneficiary: Individual)",
+    balance: "$892,000",
+    change: "-2.1%",
+    isPositive: false,
+    accounts: ["4"],
+    clientCount: 1,
+    totalAssets: "$892,000",
+    lastUpdated: "2024-01-09"
+  },
+  "5": {
+    id: "5",
+    type: "rrsp",
+    title: "005000001",
+    description: "Registered Retirement Savings Plan (RRSP) • (Beneficiary: Individual)",
+    balance: "$456,000",
+    change: "+6.8%",
+    isPositive: true,
+    accounts: ["5"],
+    clientCount: 1,
+    totalAssets: "$456,000",
     lastUpdated: "2024-01-09"
   }
 }
 
 // Plan/Account associations
 const PLAN_ACCOUNTS = {
-  "Growth Portfolio": {
-    id: "1",
-    type: "portfolio",
-    accounts: ["FID-2302"],
-    description: "Tech & Growth Stocks"
-  },
-  "Conservative Fund": {
-    id: "2", 
-    type: "mutual-fund",
+  "070G225184": {
+    id: "070G225184",
+    type: "tfsa",
     accounts: ["070G225184"],
-    description: "Bonds & Blue Chips"
+    description: "Tax-Free Savings Account (TFSA) • (Beneficiary: Estate)"
   },
-  "Retirement Fund": {
-    id: "5",
-    type: "retirement", 
+  "070G225194": {
+    id: "070G225194", 
+    type: "rrsp",
     accounts: ["070G225194"],
-    description: "401(k) & IRA"
+    description: "Registered Retirement Savings Plan (RRSP) • (Beneficiary: Estate)"
+  },
+  "1": {
+    id: "1",
+    type: "resp", 
+    accounts: ["1"],
+    description: "Registered Education Savings Plan (RESP) • (Beneficiary: Individual)"
+  },
+  "2": {
+    id: "2",
+    type: "rdsp",
+    accounts: ["2"],
+    description: "Registered Disability Savings Plan (RDSP) • (Beneficiary: Individual)"
+  },
+  "3": {
+    id: "3",
+    type: "tfsa",
+    accounts: ["3"],
+    description: "Tax-Free Savings Account (TFSA) • (Beneficiary: Multiple Clients)"
+  },
+  "4": {
+    id: "4",
+    type: "rrif",
+    accounts: ["4"],
+    description: "Registered Retirement Income Fund (RRIF) • (Beneficiary: Individual)"
+  },
+  "5": {
+    id: "5",
+    type: "rrsp",
+    accounts: ["5"],
+    description: "Registered Retirement Savings Plan (RRSP) • (Beneficiary: Individual)"
   }
 }
 
@@ -190,7 +240,7 @@ function getAllInvestmentPlans() {
     title: plan.title,
     description: plan.description,
     balance: plan.balance,
-    type: plan.type as "portfolio" | "mutual-fund" | "client" | "trading" | "retirement",
+    type: plan.type as "tfsa" | "rrsp" | "resp" | "rdsp" | "rrif" | "portfolio" | "mutual-fund" | "client" | "trading" | "retirement",
     change: plan.change,
     isPositive: plan.isPositive,
     clientCount: plan.clientCount,
@@ -212,34 +262,26 @@ export default function () {
   const totalAssets = getTotalAssetsUnderManagement()
   
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl p-6 flex flex-col border border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 text-left flex items-center gap-2">
-            <Wallet className="w-3.5 h-3.5 text-zinc-900" />
+        <div className="card-elevated p-6 flex flex-col">
+          <h2 className="text-heading-3 text-gray-900 mb-4 text-left flex items-center gap-2">
+            <Wallet className="w-4 h-4 text-gray-600" />
             Investment Plans
           </h2>
           <div className="flex-1">
             <List01 className="h-full" totalBalance={totalAssets} accounts={investmentPlans} />
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 flex flex-col border border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 text-left flex items-center gap-2">
-            <CreditCard className="w-3.5 h-3.5 text-zinc-900" />
+        <div className="card-elevated p-6 flex flex-col">
+          <h2 className="text-heading-3 text-gray-900 mb-4 text-left flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-gray-600" />
             Recent Trading Activity
           </h2>
           <div className="flex-1">
             <List02 className="h-full" transactions={recentTransactions} />
           </div>
         </div>
-      </div>
-
-      <div className="bg-white rounded-xl p-6 flex flex-col items-start justify-start border border-gray-200">
-        <h2 className="text-lg font-bold text-gray-900 mb-4 text-left flex items-center gap-2">
-          <Calendar className="w-3.5 h-3.5 text-zinc-900" />
-          Upcoming Events
-        </h2>
-        <List03 />
       </div>
     </div>
   )

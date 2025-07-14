@@ -205,8 +205,8 @@ export default function ApprovalsContent({ onRowClick }: ApprovalsContentProps) 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Approvals & eSigning</h1>
-          <p className="text-gray-600 mt-1">Review and approve pending requests</p>
+          <h1 className="text-heading-1 text-gray-900">Approvals & eSigning</h1>
+          <p className="text-body text-gray-600 mt-1">Review and approve pending requests</p>
         </div>
         <div className="flex gap-2">
           <Button 
@@ -295,7 +295,7 @@ export default function ApprovalsContent({ onRowClick }: ApprovalsContentProps) 
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Total</h3>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{APPROVALS.length}</p>
+          <p className="text-heading-1 text-gray-900">{APPROVALS.length}</p>
           <p className="text-sm text-gray-600 mt-1">All requests</p>
         </div>
       </div>

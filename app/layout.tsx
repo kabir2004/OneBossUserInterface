@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google"
 import "./globals.css"
+import Layout from "@/components/kokonutui/layout"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -17,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <Layout>{children}</Layout>
       </body>
     </html>
   )
